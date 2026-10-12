@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: Операторы сравнения в Scratch — 4 класс</title>
+<style>
+/* ============ БАЗА ============ */
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;}
+body{
+  font-family:'Segoe UI','Trebuchet MS',Verdana,Arial,sans-serif;
+  font-size:18px;
+  color:#1f2d4d;
+  background:
+    radial-gradient(circle at 8% 8%, #dbe8ff 0%, transparent 42%),
+    radial-gradient(circle at 92% 12%, #ffe9c9 0%, transparent 40%),
+    radial-gradient(circle at 50% 102%, #e6dcff 0%, transparent 52%),
+    #f2f6ff;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:18px;
+}
+
+#app{
+  width:100%;
+  max-width:1080px;
+  background:#fff;
+  border-radius:26px;
+  box-shadow:0 18px 50px rgba(40,70,140,.18);
+  padding:24px 32px 28px;
+  border:3px solid #e2ebff;
+  min-height:690px;
+  display:flex;
+  flex-direction:column;
+}
+
+.screen{display:none;}
+.screen.active{display:block;}
+
+.hidden{display:none !important;}
+
+/* ============ ЭКРАН 1: АВТОРИЗАЦИЯ ============ */
+#screen-login{text-align:center;padding-top:14px;}
+.logo-cat{font-size:82px;line-height:1;animation:cat 2.2s ease-in-out infinite;}
+@keyframes cat{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-10px) rotate(2deg);}}
+
+h1{font-size:31px;color:#3b3b8f;margin:8px 0 6px;line-height:1.2;}
+.subtitle{font-size:19px;color:#5b6b8c;margin-bottom:16px;}
+
+.op-strip{display:flex;gap:14px;justify-content:center;margin:10px 0 22px;flex-wrap:wrap;}
+.op-block{
+  background:linear-gradient(180deg,#5ec46a,#3fa653);
+  color:#fff;font-size:26px;font-weight:800;
+  padding:10px 22px;border-radius:12px;
+  box-shadow:0 5px 0 #2b7d3c, 0 8px 16px rgba(46,164,79,.28);
+  min-width:64px;
+  display:flex;align-items:center;justify-content:center;
+}
+.op-block.p{background:linear-gradient(180deg,#b07dff,#8b4dff);box-shadow:0 5px 0 #6a34cc,0 8px 16px rgba(139,77,255,.28);}
+.op-block.o{background:linear-gradient(180deg,#ffbe3d,#f79c14);box-shadow:0 5px 0 #c47a08,0 8px 16px rgba(247,156,20,.28);}
+
+.badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 26px;}
+.badge{background:#eef4ff;border:2px solid #cfe0ff;border-radius:999px;padding:7px 16px;font-size:16px;font-weight:600;color:#3a5fa8;display:inline-flex;align-items:center;gap:6px;}
+
+.name-label{display:flex;align-items:center;gap:8px;text-align:left;font-weight:700;font-size:20px;margin:0 auto 10px;max-width:580px;color:#2b3a5c;}
+
+#student-name{
+  width:100%;max-width:580px;font-size:22px;padding:16px 20px;border-radius:16px;
+  border:3px solid #2ea44f;
+  box-shadow:0 0 0 6px rgba(46,164,79,.16);
+  outline:none;transition:.2s;font-family:inherit;color:#1f2d4d;background:#fafffb;
+  display:block;margin:0 auto;
+}
+#student-name:focus{border-color:#2ea44f;box-shadow:0 0 0 9px rgba(46,164,79,.26);background:#fff;}
+#student-name::placeholder{color:#9aa9c0;font-size:19px;}
+
+#name-hint{font-size:17px;color:#7a8aa8;margin:12px 0 0;min-height:24px;font-weight:600;}
+#name-hint.ok{color:#2ea44f;}
+
+/* ============ КНОПКИ ============ */
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;justify-content:center;
+  margin-top:22px;font-size:23px;font-weight:700;font-family:inherit;
+  color:#fff;background:linear-gradient(180deg,#4cd964,#2ea44f);
+  border:none;border-radius:18px;padding:18px 42px;cursor:pointer;
+  box-shadow:0 8px 0 #1f7a38, 0 12px 26px rgba(46,164,79,.35);
+  transition:.12s;
+}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);}
+.btn-primary:active:not(:disabled){transform:translateY(6px);box-shadow:0 2px 0 #1f7a38;}
+.btn-primary:disabled{background:#cdd7e5;box-shadow:0 8px 0 #b3bfd0;cursor:not-allowed;color:#f4f7fb;transform:none;}
+
+.btn-next{
+  font-family:inherit;font-size:20px;font-weight:700;color:#fff;
+  background:linear-gradient(180deg,#b07dff,#8b4dff);
+  border:none;border-radius:16px;padding:15px 30px;cursor:pointer;
+  box-shadow:0 6px 0 #6a34cc;transition:.12s;margin-left:auto;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-next:hover{transform:translateY(-2px);}
+.btn-next:active{transform:translateY(4px);box-shadow:0 2px 0 #6a34cc;}
+
+.btn-check{
+  font-family:inherit;font-size:19px;font-weight:700;color:#fff;
+  background:linear-gradient(180deg,#66a6ff,#3b7ddd);
+  border:none;border-radius:14px;padding:14px 30px;cursor:pointer;
+  box-shadow:0 5px 0 #2d5fae;margin-top:16px;transition:.12s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-check:hover:not(:disabled){transform:translateY(-2px);}
+.btn-check:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 #2d5fae;}
+.btn-check:disabled{background:#cdd7e5;box-shadow:0 5px 0 #b3bfd0;cursor:not-allowed;}
+
+/* ============ ЭКРАН 2: ТЕСТ ============ */
+.quiz-header{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.hud{display:flex;align-items:center;gap:8px;border-radius:14px;padding:9px 16px;font-size:18px;font-weight:700;color:#2b3a5c;border:2px solid;}
+.hud.name{background:#f0fff4;border-color:#b9ecc7;}
+.hud.stage{background:#fff4e0;border-color:#ffd9a0;}
+.hud.score{background:#f3ecff;border-color:#d9c7ff;}
+
+.progress-wrap{margin-bottom:16px;}
+.progress-bar{height:16px;background:#e8eefb;border-radius:999px;overflow:hidden;border:2px solid #dbe6f9;}
+#progress-fill{height:100%;width:0;background:linear-gradient(90deg,#4C97FF,#9966FF,#FFAB19);border-radius:999px;transition:width .35s ease;}
+.progress-text{font-size:16px;color:#5b6b8c;margin-top:6px;font-weight:700;text-align:right;}
+
+.q-card{background:#fbfdff;border:3px solid #e3ecfb;border-radius:20px;padding:20px 22px;flex:1;display:flex;flex-direction:column;}
+.q-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.q-type{background:#4C97FF;color:#fff;font-size:15px;font-weight:700;padding:7px 16px;border-radius:999px;letter-spacing:.3px;display:inline-flex;align-items:center;gap:7px;}
+.hint-btn{
+  font-family:inherit;font-size:17px;font-weight:700;background:#fff8dc;color:#8a6d00;
+  border:2px solid #ffd94a;border-radius:999px;padding:9px 18px;cursor:pointer;transition:.15s;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.hint-btn:hover{background:#ffefb0;transform:scale(1.05);}
+
+#q-text{font-size:23px;line-height:1.35;color:#1f2d4d;margin:4px 0 16px;}
+
+.hint-box{
+  background:#fffbe6;border-left:7px solid #FFD500;border-radius:12px;
+  padding:14px 18px;font-size:18px;color:#6b5700;margin-bottom:16px;line-height:1.4;
+}
+
+/* варианты ответа */
+.opt-btn{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-family:inherit;font-size:19px;line-height:1.35;
+  padding:15px 20px;margin-bottom:11px;border-radius:14px;border:3px solid #d9e3f2;background:#fff;
+  cursor:pointer;transition:.15s;color:#1f2d4d;
+}
+.opt-btn .opt-marker{
+  flex:0 0 auto;width:34px;height:34px;border-radius:50%;
+  background:#eef4ff;color:#3a5fa8;font-weight:800;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid #d6e4ff;
+}
+.opt-btn:hover:not(:disabled){border-color:#4C97FF;background:#f2f8ff;transform:translateX(6px);}
+.opt-btn:disabled{cursor:default;}
+.opt-btn.correct{background:#e8fbee;border-color:#2ea44f;color:#14612c;font-weight:700;}
+.opt-btn.correct .opt-marker{background:#2ea44f;color:#fff;border-color:#2ea44f;}
+.opt-btn.wrong{background:#ffeef1;border-color:#e5484d;color:#8c1c22;font-weight:700;}
+.opt-btn.wrong .opt-marker{background:#e5484d;color:#fff;border-color:#e5484d;}
+
+/* верно / неверно */
+.tf-row{display:flex;gap:18px;flex-wrap:wrap;}
+.tf-btn{
+  flex:1;min-width:180px;font-family:inherit;font-size:23px;font-weight:800;padding:26px 18px;
+  border-radius:18px;border:3px solid #d9e3f2;background:#fff;cursor:pointer;transition:.15s;color:#1f2d4d;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.tf-btn:hover:not(:disabled){transform:translateY(-4px);box-shadow:0 10px 20px rgba(76,151,255,.22);border-color:#4C97FF;}
+.tf-btn:disabled{cursor:default;}
+.tf-btn.correct{background:#e8fbee;border-color:#2ea44f;color:#14612c;}
+.tf-btn.wrong{background:#ffeef1;border-color:#e5484d;color:#8c1c22;}
+
+/* соотнесение */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.match-col-title{font-size:15px;font-weight:800;color:#7a8aa8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:6px;}
+.match-item{
+  padding:13px 16px;border:3px solid #d9e3f2;border-radius:14px;background:#fff;
+  font-size:19px;cursor:pointer;margin-bottom:10px;transition:.15s;
+  display:flex;align-items:center;gap:10px;min-height:58px;line-height:1.25;
+}
+.match-item .mi-dot{
+  flex:0 0 auto;width:12px;height:12px;border-radius:50%;background:#cfe0ff;
+}
+.match-item:hover:not(.used){border-color:#9966FF;background:#faf6ff;}
+.match-item.selected{border-color:#FFAB19;background:#fff7e6;box-shadow:0 0 0 5px rgba(255,171,25,.25);}
+.match-item.paired{border-color:#9966FF;background:#f6f0ff;}
+.match-item.used{opacity:.42;pointer-events:none;}
+.match-item.ok{border-color:#2ea44f;background:#e8fbee;color:#14612c;font-weight:700;opacity:1;}
+.match-item.ok .mi-dot{background:#2ea44f;}
+.match-item.bad{border-color:#e5484d;background:#ffeef1;color:#8c1c22;font-weight:700;opacity:1;}
+.match-item.bad .mi-dot{background:#e5484d;}
+
+/* ============ КЛАССИФИКАЦИЯ (drag & drop) ============ */
+.classify-wrap{display:flex;flex-direction:column;gap:14px;}
+
+.pool{
+  position:relative;
+  display:flex;flex-wrap:wrap;gap:12px;min-height:88px;padding:16px 14px 14px;
+  border:3px dashed #cbd9ee;border-radius:18px;background:#f7faff;
+  align-items:center;justify-content:center;
+  transition:border-color .2s, background .2s;
+}
+.pool::before{
+  content:"🖐️ ПЕРЕТАЩИ В КОРЗИНУ";
+  position:absolute;top:-12px;left:18px;
+  background:#fff;color:#7a8aa8;font-size:12px;font-weight:800;letter-spacing:.8px;
+  padding:0 10px;
+}
+.pool-empty{font-size:17px;color:#8c9ab5;font-style:italic;font-weight:600;padding:6px;}
+
+.chip{
+  font-family:inherit;font-size:18px;font-weight:700;padding:11px 18px;border-radius:12px;
+  border:3px solid #cfe0ff;background:#fff;color:#2b3a5c;
+  cursor:grab;transition:transform .12s, box-shadow .12s, border-color .15s, background .15s;
+  touch-action:none;user-select:none;
+  display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 3px 0 #e0eaff, 0 4px 10px rgba(76,151,255,.10);
+}
+.chip .chip-icon{
+  width:22px;height:22px;border-radius:6px;background:linear-gradient(180deg,#5ec46a,#3fa653);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:900;
+  box-shadow:0 2px 0 #2b7d3c;
+}
+.chip:hover:not(.locked){border-color:#4C97FF;transform:translateY(-2px);box-shadow:0 5px 0 #e0eaff, 0 8px 16px rgba(76,151,255,.20);}
+.chip.dragging{opacity:.35;cursor:grabbing;}
+.chip.locked{cursor:default;}
+.chip.ok{border-color:#2ea44f;background:#e8fbee;color:#14612c;box-shadow:0 3px 0 #b7e8c6;}
+.chip.ok .chip-icon{background:linear-gradient(180deg,#5ec46a,#2ea44f);}
+.chip.bad{border-color:#e5484d;background:#ffeef1;color:#8c1c22;box-shadow:0 3px 0 #ffc9cd;}
+.chip.bad .chip-icon{background:linear-gradient(180deg,#ff7b80,#e5484d);box-shadow:0 2px 0 #b21d22;}
+
+/* «призрак» перетаскиваемого элемента */
+.ghost{
+  position:fixed;pointer-events:none;z-index:9999;
+  transform:rotate(-3deg) scale(1.06);
+  box-shadow:0 14px 32px rgba(40,70,140,.32) !important;
+  cursor:grabbing;
+}
+
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.bucket{
+  position:relative;border-radius:20px;padding:22px 14px 14px;min-height:170px;
+  border:3px dashed;transition:.18s;
+  display:flex;flex-direction:column;
+}
+.bucket-a{border-color:#7ed99a;background:#f2fff6;}
+.bucket-b{border-color:#ffb3b8;background:#fff5f6;}
+.bucket-c{border-color:#b07dff;background:#f7f2ff;}
+.bucket-d{border-color:#ffbe3d;background:#fffaf0;}
+
+.bucket:hover{border-style:solid;}
+.bucket.hover{
+  border-style:solid;
+  box-shadow:0 0 0 7px rgba(76,151,255,.25);
+  transform:scale(1.025);
+}
+.bucket-a.hover{box-shadow:0 0 0 7px rgba(46,164,79,.28);}
+.bucket-b.hover{box-shadow:0 0 0 7px rgba(229,72,77,.25);}
+.bucket-c.hover{box-shadow:0 0 0 7px rgba(139,77,255,.25);}
+.bucket-d.hover{box-shadow:0 0 0 7px rgba(247,156,20,.28);}
+
+.bucket-title{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  background:#fff;padding:5px 16px;border-radius:999px;
+  font-size:16px;font-weight:800;white-space:nowrap;
+  border:2px solid;display:inline-flex;align-items:center;gap:7px;
+}
+.bucket-a .bucket-title{color:#1f8a45;border-color:#7ed99a;background:#f2fff6;}
+.bucket-b .bucket-title{color:#c22b31;border-color:#ffb3b8;background:#fff5f6;}
+.bucket-c .bucket-title{color:#6a34cc;border-color:#b07dff;background:#f7f2ff;}
+.bucket-d .bucket-title{color:#b06f00;border-color:#ffbe3d;background:#fffaf0;}
+
+.bucket-body{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  min-height:70px;align-items:flex-start;flex:1;
+  border-radius:12px;padding-top:6px;
+}
+.bucket-placeholder{
+  color:#9aa9c0;font-size:15px;font-style:italic;font-weight:600;
+  margin:auto;padding:8px;
+}
+
+/* низ карточки */
+.q-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap;min-height:62px;}
+.feedback{font-size:19px;font-weight:700;max-width:640px;line-height:1.35;display:flex;align-items:flex-start;gap:8px;}
+.feedback.ok{color:#1f8a45;}
+.feedback.bad{color:#c22b31;}
+
+/* ============ ОВЕРЛЕЙ ПЕРЕХОДА ЭТАПА ============ */
+.overlay{position:fixed;inset:0;background:rgba(24,38,70,.62);display:flex;align-items:center;justify-content:center;padding:20px;z-index:80;}
+.overlay-card{background:#fff;border-radius:26px;padding:36px 40px;max-width:600px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.35);border:4px solid #e2ebff;}
+.overlay-card h2{font-size:29px;color:#3b3b8f;margin:10px 0 12px;}
+.overlay-card p{font-size:19px;color:#43536f;margin-bottom:12px;line-height:1.4;}
+.big-emoji{font-size:66px;line-height:1;}
+
+/* ============ ЭКРАН 3: ИТОГИ ============ */
+#screen-result{text-align:center;padding-top:6px;}
+.result-name{font-size:25px;font-weight:700;color:#2b3a5c;margin:12px 0 4px;display:inline-flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;}
+.result-score{font-size:66px;font-weight:800;color:#2ea44f;line-height:1.1;}
+.result-score span{font-size:26px;color:#5b6b8c;font-weight:700;}
+.result-verdict{font-size:30px;font-weight:800;margin:8px 0 18px;display:inline-flex;align-items:center;gap:10px;justify-content:center;}
+.stage-stats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;}
+.stat{background:#eef4ff;border:2px solid #d6e4ff;border-radius:14px;padding:11px 18px;font-size:17px;font-weight:600;color:#2b3a5c;display:inline-flex;align-items:center;gap:8px;}
+
+table.descriptors{width:100%;border-collapse:collapse;margin:0 auto 24px;font-size:16.5px;}
+table.descriptors th,table.descriptors td{border:2px solid #e2ebff;padding:12px 14px;text-align:left;vertical-align:top;line-height:1.35;}
+table.descriptors th{background:#eef4ff;color:#2b3a5c;font-size:16px;}
+table.descriptors td:first-child{white-space:nowrap;font-weight:700;color:#3b3b8f;text-align:center;width:110px;}
+table.descriptors td:nth-child(2){font-weight:700;width:200px;}
+table.descriptors tr.active td{background:#e8fbee;border-color:#2ea44f;}
+
+/* ============ АДАПТИВНОСТЬ ============ */
+@media (max-width:900px){
+  body{padding:10px;font-size:17px;}
+  #app{padding:18px 18px 22px;border-radius:20px;min-height:auto;}
+  h1{font-size:26px;}
+  #q-text{font-size:20px;}
+  .opt-btn{font-size:17.5px;padding:13px 16px;}
+  .tf-btn{font-size:20px;padding:20px 14px;}
+  .match-grid{grid-template-columns:1fr;}
+  .buckets{grid-template-columns:1fr;}
+  .result-score{font-size:54px;}
+  .result-verdict{font-size:25px;}
+  .bucket{min-height:140px;}
+}
+@media (max-width:600px){
+  .quiz-header{font-size:15px;}
+  .hud{font-size:15px;padding:7px 12px;}
+  table.descriptors{font-size:15px;}
+  table.descriptors td:nth-child(2){width:auto;}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ================= ЭКРАН 1: АВТОРИЗАЦИЯ ================= -->
+  <section id="screen-login" class="screen active">
+    <div class="logo-cat">🐱</div>
+    <h1>🎯 Операторы сравнения в Scratch</h1>
+    <p class="subtitle">Цифровая грамотность · 4 класс · Урок 4 · Практический тренажёр</p>
+
+    <div class="op-strip">
+      <div class="op-block">&gt;</div>
+      <div class="op-block">&lt;</div>
+      <div class="op-block">=</div>
+      <div class="op-block p">если…то</div>
+      <div class="op-block o">🟢 Операторы</div>
+    </div>
+
+    <div class="badges">
+      <div class="badge">📝 30 заданий</div>
+      <div class="badge">⏱ Без таймера</div>
+      <div class="badge">🏅 10 баллов</div>
+      <div class="badge">💡 Подсказки</div>
+      <div class="badge">🖐️ Drag & Drop</div>
+    </div>
+
+    <label class="name-label" for="student-name">👤 Введите ваше имя и фамилию:</label>
+    <input type="text" id="student-name" placeholder="Введите ваше имя и фамилию..." autocomplete="off" maxlength="40">
+    <p id="name-hint">✏️ Введите не менее 2 символов</p>
+
+    <button id="start-btn" class="btn-primary" disabled>🚀 Начать практическую работу</button>
+  </section>
+
+  <!-- ================= ЭКРАН 2: ТЕСТ ================= -->
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <div class="hud name">🐱 <span id="hdr-name">Ученик</span></div>
+      <div class="hud stage" id="hdr-stage">🎯 Этап 1 · Базовый</div>
+      <div class="hud score">🏅 Баллы: <span id="hdr-score">0</span></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar"><div id="progress-fill"></div></div>
+      <div class="progress-text">📊 Вопрос <span id="q-num">1</span> из 30</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-type" id="q-type">🎯 Выбор ответа</span>
+        <button class="hint-btn" id="hint-btn" type="button">💡 Подсказка</button>
+      </div>
+
+      <h2 id="q-text"></h2>
+      <div id="hint-box" class="hint-box hidden"></div>
+      <div id="answer-area"></div>
+
+      <div class="q-bottom">
+        <div id="feedback" class="feedback"></div>
+        <button id="next-btn" class="btn-next hidden" type="button">Следующий вопрос ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ЭКРАН 3: ИТОГИ ================= -->
+  <section id="screen-result" class="screen">
+    <div class="big-emoji">🐱🏆</div>
+    <div class="result-name" id="res-name"></div>
+    <div class="result-score" id="res-score"></div>
+    <div class="result-verdict" id="res-verdict"></div>
+
+    <div class="stage-stats">
+      <div class="stat" id="res-stage1"></div>
+      <div class="stat" id="res-stage2"></div>
+    </div>
+
+    <table class="descriptors">
+      <thead>
+        <tr><th>Баллы</th><th>Оценка</th><th>Дескриптор</th></tr>
+      </thead>
+      <tbody>
+        <tr id="desc-a">
+          <td>9 – 10</td>
+          <td>🌟 Отлично!</td>
+          <td>Отлично знает операторы сравнения Scratch, безошибочно строит и анализирует условия в программах.</td>
+        </tr>
+        <tr id="desc-b">
+          <td>7 – 8</td>
+          <td>👍 Хорошо!</td>
+          <td>Уверенно знает знаки сравнения и их результат, допускает незначительные ошибки в сложных блоках.</td>
+        </tr>
+        <tr id="desc-c">
+          <td>5 – 6</td>
+          <td>📘 Удовлетворительно</td>
+          <td>Понимает базовые знаки сравнения, но путается при работе с переменными в Scratch.</td>
+        </tr>
+        <tr id="desc-d">
+          <td>0 – 4</td>
+          <td>🔁 Нужно повторить</td>
+          <td>Затрудняется в определении истинности условий, рекомендуется повторить тему.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button id="restart-btn" class="btn-primary" type="button">🔄 Пройти заново</button>
+  </section>
+
+</div>
+
+<!-- Оверлей перехода на 2 этап -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="big-emoji">🎉</div>
+    <h2>Базовый этап пройден!</h2>
+    <p>Твой результат за 1 этап: <b id="ov-score">0</b> из 8 баллов.</p>
+    <p>А теперь — <b>продвинутый этап</b>: 10 заданий на 2 балла. Здесь нужно подумать как настоящему программисту! 🐱💻</p>
+    <button id="ov-btn" class="btn-primary" type="button">🚀 Перейти к этапу 2</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* =====================================================
+     ДАННЫЕ: 30 ВОПРОСОВ (2 ЭТАПА)
+     ===================================================== */
+  const QUESTIONS = [
+
+    /* ---------- ЭТАП 1: БАЗОВЫЙ (1–20) ---------- */
+    {
+      stage:1, type:'single',
+      text:'Какой цвет имеют блоки операторов сравнения в Scratch?',
+      hint:'Открой категорию «Операторы» — там лежат зелёные блоки со знаками >, < и =.',
+      options:['Зелёный','Оранжевый','Синий','Фиолетовый'],
+      correct:'Зелёный'
+    },
+    {
+      stage:1, type:'single',
+      text:'Что делает знак «>» в Scratch?',
+      hint:'Знак «>» читается как «больше». Он сравнивает два числа между собой.',
+      options:[
+        'Проверяет, больше ли первое число, чем второе',
+        'Проверяет, меньше ли первое число, чем второе',
+        'Проверяет, равны ли два значения',
+        'Складывает два числа'
+      ],
+      correct:'Проверяет, больше ли первое число, чем второе'
+    },
+    {
+      stage:1, type:'single',
+      text:'Что делает знак «<» в Scratch?',
+      hint:'Знак «<» читается как «меньше». Он проверяет, меньше ли первое число, чем второе.',
+      options:[
+        'Проверяет, меньше ли первое число, чем второе',
+        'Проверяет, больше ли первое число, чем второе',
+        'Проверяет, равны ли два значения',
+        'Вычитает одно число из другого'
+      ],
+      correct:'Проверяет, меньше ли первое число, чем второе'
+    },
+    {
+      stage:1, type:'single',
+      text:'Что делает знак «=» в Scratch?',
+      hint:'Знак «=» сравнивает два значения и проверяет, одинаковые ли они.',
+      options:[
+        'Проверяет, равны ли два значения',
+        'Проверяет, больше ли первое число',
+        'Умножает два числа',
+        'Меняет переменную'
+      ],
+      correct:'Проверяет, равны ли два значения'
+    },
+    {
+      stage:1, type:'tf',
+      text:'Верно или неверно: выражение 10 > 5 даёт результат ИСТИНА?',
+      hint:'10 действительно больше, чем 5. Значит, сравнение верное.',
+      correct:'Верно'
+    },
+    {
+      stage:1, type:'tf',
+      text:'Верно или неверно: выражение 3 > 8 даёт результат ИСТИНА?',
+      hint:'3 не больше 8 — наоборот, 3 меньше. Значит, результат будет ЛОЖЬ.',
+      correct:'Неверно'
+    },
+    {
+      stage:1, type:'single',
+      text:'Какой ответ даст Scratch на выражение (7 = 7)?',
+      hint:'Семь равно семи — это правильное утверждение. Scratch отвечает ИСТИНА (true).',
+      options:['Истина','Ложь','Число 7','Ошибку'],
+      correct:'Истина'
+    },
+    {
+      stage:1, type:'match',
+      text:'Соотнеси знак сравнения с его значением.',
+      hint:'«>» — больше, «<» — меньше, «=» — равно. Нажми на знак слева, потом на значение справа.',
+      pairs:[
+        {left:'>', right:'Больше'},
+        {left:'<', right:'Меньше'},
+        {left:'=', right:'Равно'}
+      ]
+    },
+    {
+      stage:1, type:'single',
+      text:'В какой категории блоков в Scratch живут операторы сравнения?',
+      hint:'Это категория с зелёным цветом, где есть блоки «+», «−», «случайное число».',
+      options:['Операторы','Движение','Внешность','Звук'],
+      correct:'Операторы'
+    },
+    {
+      stage:1, type:'single',
+      text:'Какую форму имеют блоки операторов сравнения в Scratch?',
+      hint:'У них шесть углов — они похожи на маленький шестиугольник (соты).',
+      options:['Шестиугольную','Овальную','Квадратную','Круглую'],
+      correct:'Шестиугольную'
+    },
+    {
+      stage:1, type:'tf',
+      text:'Верно или неверно: зелёный блок сравнения можно вставить внутрь оранжевого блока «если…то»?',
+      hint:'Именно так и работают условия: шестиугольник сравнения вставляется в «если…то».',
+      correct:'Верно'
+    },
+    {
+      stage:1, type:'single',
+      text:'Какое значение нужно поставить вместо многоточия: 15 … 20, чтобы получилась ИСТИНА?',
+      hint:'15 меньше 20, значит нужен знак «<».',
+      options:['<','>','=','+'],
+      correct:'<'
+    },
+    {
+      stage:1, type:'single',
+      text:'Какое значение нужно поставить вместо многоточия: 100 … 50, чтобы получилась ИСТИНА?',
+      hint:'100 больше 50, значит нужен знак «>».',
+      options:['>','<','=','−'],
+      correct:'>'
+    },
+    {
+      stage:1, type:'classify',
+      text:'Распредели выражения по корзинам: где получится ИСТИНА, а где ЛОЖЬ?',
+      hint:'Сначала посчитай каждое выражение в уме, а потом перетащи его в нужную корзину.',
+      buckets:['Истина','Ложь'],
+      items:[
+        {text:'(5 > 2)', bucket:'Истина'},
+        {text:'(8 = 8)', bucket:'Истина'},
+        {text:'(1 < 10)', bucket:'Истина'},
+        {text:'(3 > 6)', bucket:'Ложь'}
+      ]
+    },
+    {
+      stage:1, type:'classify',
+      text:'Распредели выражения по корзинам: где получится ЛОЖЬ, а где ИСТИНА?',
+      hint:'Проверь каждое выражение: 4 > 9 — это ложь, 0 = 5 — тоже ложь, 12 < 3 — ложь.',
+      buckets:['Истина','Ложь'],
+      items:[
+        {text:'(4 > 9)', bucket:'Ложь'},
+        {text:'(0 = 5)', bucket:'Ложь'},
+        {text:'(12 < 3)', bucket:'Ложь'},
+        {text:'(10 = 10)', bucket:'Истина'}
+      ]
+    },
+    {
+      stage:1, type:'single',
+      text:'Если переменная Очки = 5, то выражение (Очки = 5) — это…',
+      hint:'Значение переменной совпадает с числом 5, поэтому сравнение истинное.',
+      options:['Истина','Ложь','Число 5','Ошибка'],
+      correct:'Истина'
+    },
+    {
+      stage:1, type:'single',
+      text:'Если переменная Монеты = 2, то выражение (Монеты > 5) — это…',
+      hint:'2 не больше 5, поэтому результат сравнения — ЛОЖЬ.',
+      options:['Ложь','Истина','Число 2','Ошибка'],
+      correct:'Ложь'
+    },
+    {
+      stage:1, type:'single',
+      text:'Выбери верное неравенство:',
+      hint:'Проверь каждое: где первое число действительно больше второго?',
+      options:['6 > 2','3 > 7','1 = 5','0 > 10'],
+      correct:'6 > 2'
+    },
+    {
+      stage:1, type:'single',
+      text:'Что означает результат FALSE в Scratch?',
+      hint:'FALSE по-английски — «ложь», то есть утверждение неверное.',
+      options:['Ложь','Истина','Ноль','Пусто'],
+      correct:'Ложь'
+    },
+    {
+      stage:1, type:'single',
+      text:'Что означает результат TRUE в Scratch?',
+      hint:'TRUE по-английски — «истина», то есть утверждение верное.',
+      options:['Истина','Ложь','Единица','Ошибка'],
+      correct:'Истина'
+    },
+
+    /* ---------- ЭТАП 2: ПРОДВИНУТЫЙ (21–30) ---------- */
+    {
+      stage:2, type:'single',
+      text:'Кот говорит «Ура!», если выполняется условие (Монеты > 10). У игрока ровно 10 монет. Скажет ли Кот «Ура!»?',
+      hint:'Условие «>» — строгое. Число 10 не больше 10, оно равно 10. Значит, условие ложно.',
+      options:[
+        'Нет, потому что 10 не больше 10',
+        'Да, потому что 10 равно 10',
+        'Да, потому что монет много',
+        'Нет, потому что монет слишком мало'
+      ],
+      correct:'Нет, потому что 10 не больше 10'
+    },
+    {
+      stage:2, type:'single',
+      text:'Кот должен похвалить игрока, у которого 10 монет и больше. Какое условие подойдёт?',
+      hint:'Нам нужны все числа от 10 и выше. В Scratch нет знака «≥», поэтому берём «Монеты > 9».',
+      options:['Монеты > 9','Монеты > 10','Монеты < 10','Монеты = 9'],
+      correct:'Монеты > 9'
+    },
+    {
+      stage:2, type:'match',
+      text:'Соотнеси ситуацию и результат сравнения в Scratch.',
+      hint:'Подставь значение переменной в выражение и посмотри, истинно оно или ложно.',
+      pairs:[
+        {left:'Жизни = 0', right:'(Жизни < 1) → Истина'},
+        {left:'Очки = 7', right:'(Очки > 10) → Ложь'},
+        {left:'Уровень = 3', right:'(Уровень = 3) → Истина'}
+      ]
+    },
+    {
+      stage:2, type:'single',
+      text:'В игре Уровень = 3. Выполнится ли блок [если &lt;Уровень > 2&gt; то → сменить костюм]?',
+      hint:'Сравниваем: 3 > 2 — это истина. Значит, действие внутри блока выполнится.',
+      options:[
+        'Да, выполнится: 3 больше 2',
+        'Нет: 3 меньше 2',
+        'Нет: 3 равно 2',
+        'Программа выдаст ошибку'
+      ],
+      correct:'Да, выполнится: 3 больше 2'
+    },
+    {
+      stage:2, type:'single',
+      text:'Какое условие проверит, что игрок проиграл, если у него 0 жизней?',
+      hint:'Нужно условие, которое станет истинным именно при нуле жизней.',
+      options:['Жизни = 0','Жизни > 0','Жизни > 10','Жизни = 10'],
+      correct:'Жизни = 0'
+    },
+    {
+      stage:2, type:'single',
+      text:'Какая переменная сравнивается в блоке (Скорость > 50)?',
+      hint:'Переменная — это «коробочка» с именем. Число 50 — это просто число.',
+      options:['Скорость','50','Знак «>»','Костюм кота'],
+      correct:'Скорость'
+    },
+    {
+      stage:2, type:'classify',
+      text:'Очки = 4. Распредели условия: где программа ВЫПОЛНИТ действие, а где ПРОПУСТИТ его.',
+      hint:'Подставь Очки = 4 в каждое условие и проверь, истина это или ложь.',
+      buckets:['Выполнит действие','Пропустит действие'],
+      items:[
+        {text:'(Очки > 3)', bucket:'Выполнит действие'},
+        {text:'(Очки > 5)', bucket:'Пропустит действие'},
+        {text:'(Очки = 4)', bucket:'Выполнит действие'},
+        {text:'(Очки < 2)', bucket:'Пропустит действие'}
+      ]
+    },
+    {
+      stage:2, type:'single',
+      text:'Собери правильный фрагмент: Кот должен сказать «Победа!», если Очки больше 5.',
+      hint:'Нужен блок «если…то», внутри которого сравнение (Очки > 5).',
+      options:[
+        'если <(Очки > 5)> то → сказать «Победа!»',
+        'если <(Очки < 5)> то → сказать «Победа!»',
+        'если <(Очки = 5)> то → сказать «Победа!»',
+        'если <(5 > Очки)> то → сказать «Победа!»'
+      ],
+      correct:'если <(Очки > 5)> то → сказать «Победа!»'
+    },
+    {
+      stage:2, type:'single',
+      text:'Ученик написал код: [если &lt;5 < 3&gt; то → сказать «Привет!»]. Выполнится ли действие внутри?',
+      hint:'5 < 3 — это ложь (5 больше 3). Если условие ложно, блок «если…то» ничего не делает.',
+      options:[
+        'Нет, потому что 5 < 3 — это ложь',
+        'Да, потому что 5 больше 3',
+        'Да, потому что использован знак <',
+        'Нет, потому что в Scratch нет знака <'
+      ],
+      correct:'Нет, потому что 5 < 3 — это ложь'
+    },
+    {
+      stage:2, type:'single',
+      text:'Почему операторы сравнения называют «логическими»?',
+      hint:'Логика — это про истину и ложь. Именно такие ответы дают операторы сравнения.',
+      options:[
+        'Потому что их результат всегда Истина или Ложь',
+        'Потому что они находятся в категории «Операторы»',
+        'Потому что они зелёного цвета',
+        'Потому что их вставляют в блок «если…то»'
+      ],
+      correct:'Потому что их результат всегда Истина или Ложь'
+    }
+  ];
+
+  /* =====================================================
+     ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+     ===================================================== */
+  const $ = function(id){ return document.getElementById(id); };
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function fmt(v){
+    const r = Math.round(v * 10) / 10;
+    if(Number.isInteger(r)) return String(r);
+    return String(r).replace('.', ',');
+  }
+
+  /* Типы заданий с иконками */
+  function typeLabel(q){
+    if(q.type === 'single')   return { icon:'🎯', label:'Выбор одного ответа' };
+    if(q.type === 'tf')       return { icon:'⚖️', label:'Верно / Неверно' };
+    if(q.type === 'match')    return { icon:'🧩', label:'Соотнеси пары' };
+    if(q.type === 'classify') return { icon:'📦', label:'Перетащи в корзину' };
+    return { icon:'❓', label:'Задание' };
+  }
+
+  /* Иконка и цвет для корзины по её названию */
+  function bucketMeta(name){
+    const n = name.toLowerCase();
+    if(n.indexOf('истина') !== -1)  return { icon:'✅', cls:'bucket-a' };
+    if(n.indexOf('ложь') !== -1)    return { icon:'❌', cls:'bucket-b' };
+    if(n.indexOf('выполн') !== -1)  return { icon:'▶️', cls:'bucket-c' };
+    if(n.indexOf('пропуст') !== -1) return { icon:'⏭️', cls:'bucket-d' };
+    return { icon:'📦', cls:'bucket-c' };
+  }
+
+  /* Иконка маркера для варианта ответа */
+  function optMarker(i){
+    return ['A','Б','В','Г','Д','Е'][i] || String(i+1);
+  }
+
+  /* Иконка «чипа» для классификации */
+  function chipIcon(text){
+    if(text.indexOf('>') !== -1) return '>';
+    if(text.indexOf('<') !== -1) return '<';
+    if(text.indexOf('=') !== -1) return '=';
+    return '≡';
+  }
+
+  function correctText(q){
+    if(q.type === 'single' || q.type === 'tf') return q.correct;
+    if(q.type === 'match') return q.pairs.map(function(p){ return p.left + ' → ' + p.right; }).join(';  ');
+    if(q.type === 'classify') return q.items.map(function(i){ return i.text + ' — ' + i.bucket; }).join(';  ');
+    return '';
+  }
+
+  /* =====================================================
+     СОСТОЯНИЕ
+     ===================================================== */
+  const state = {
+    name:'',
+    idx:0,
+    score:0,
+    stage1Correct:0,
+    stage2Correct:0,
+    answered:false,
+    stage2Started:false
+  };
+
+  const screens = {
+    login: $('screen-login'),
+    quiz: $('screen-quiz'),
+    result: $('screen-result')
+  };
+
+  function showScreen(name){
+    for(const key in screens){
+      screens[key].classList.remove('active');
+    }
+    screens[name].classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  /* =====================================================
+     ЭКРАН 1: АВТОРИЗАЦИЯ
+     ===================================================== */
+  const nameInput = $('student-name');
+  const startBtn  = $('start-btn');
+  const nameHint  = $('name-hint');
+
+  nameInput.addEventListener('input', function(){
+    const v = nameInput.value.trim();
+    if(v.length < 2){
+      startBtn.disabled = true;
+      nameHint.textContent = '✏️ Введите не менее 2 символов';
+      nameHint.classList.remove('ok');
+    } else {
+      startBtn.disabled = false;
+      nameHint.textContent = '✅ Отлично! Можно начинать';
+      nameHint.classList.add('ok');
+    }
+  });
+
+  startBtn.addEventListener('click', function(){
+    const v = nameInput.value.trim();
+    if(v.length < 2) return;
+
+    state.name = v;
+    state.idx = 0;
+    state.score = 0;
+    state.stage1Correct = 0;
+    state.stage2Correct = 0;
+    state.answered = false;
+    state.stage2Started = false;
+
+    $('hdr-name').textContent = v;
+    showScreen('quiz');
+    renderQuestion();
+  });
+
+  /* =====================================================
+     ЭКРАН 2: РЕНДЕР ВОПРОСА
+     ===================================================== */
+  function updateScoreHud(){
+    $('hdr-score').textContent = fmt(state.score) + ' / 10';
+  }
+
+  function renderQuestion(){
+    const q = QUESTIONS[state.idx];
+    state.answered = false;
+
+    /* Шапка */
+    const stageIcon = (q.stage === 1) ? '🎯' : '🚀';
+    const stageTxt  = (q.stage === 1) ? 'Этап 1 · Базовый' : 'Этап 2 · Продвинутый';
+    $('hdr-stage').textContent = stageIcon + ' ' + stageTxt;
+    $('q-num').textContent = state.idx + 1;
+    $('progress-fill').style.width = (state.idx / QUESTIONS.length * 100) + '%';
+    updateScoreHud();
+
+    /* Подсказка */
+    const hintBox = $('hint-box');
+    hintBox.textContent = '💡 ' + (q.hint || 'Внимательно прочитай вопрос ещё раз.');
+    hintBox.classList.add('hidden');
+
+    /* Обратная связь */
+    const fb = $('feedback');
+    fb.textContent = '';
+    fb.className = 'feedback';
+
+    /* Кнопка «далее» */
+    const nextBtn = $('next-btn');
+    nextBtn.classList.add('hidden');
+
+    /* Область ответов */
+    const area = $('answer-area');
+    area.innerHTML = '';
+
+    $('q-text').textContent = q.text;
+
+    const t = typeLabel(q);
+    $('q-type').textContent = t.icon + ' ' + t.label;
+
+    if(q.type === 'single')        renderSingle(q, area);
+    else if(q.type === 'tf')       renderTF(q, area);
+    else if(q.type === 'match')    renderMatch(q, area);
+    else if(q.type === 'classify') renderClassify(q, area);
+  }
+
+  /* --- Тип 1: выбор одного ответа --- */
+  function renderSingle(q, area){
+    const opts = shuffle(q.options);
+    opts.forEach(function(opt, i){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt-btn';
+
+      const marker = document.createElement('span');
+      marker.className = 'opt-marker';
+      marker.textContent = optMarker(i);
+
+      const txt = document.createElement('span');
+      txt.textContent = opt;
+
+      b.appendChild(marker);
+      b.appendChild(txt);
+
+      b.addEventListener('click', function(){
+        if(state.answered) return;
+        state.answered = true;
+
+        area.querySelectorAll('.opt-btn').forEach(function(x){
+          x.disabled = true;
+          if(x.textContent.replace(/^[А-ЕA-Я0-9]/, '').trim() === q.correct ||
+             x.lastChild.textContent === q.correct){
+            x.classList.add('correct');
+          }
+        });
+
+        const ok = (opt === q.correct);
+        if(!ok) b.classList.add('wrong');
+        finishQuestion(ok, q);
+      });
+      area.appendChild(b);
+    });
+  }
+
+  /* --- Тип 2: Верно / Неверно --- */
+  function renderTF(q, area){
+    const row = document.createElement('div');
+    row.className = 'tf-row';
+
+    [
+      {v:'Верно',   icon:'✅', label:'ВЕРНО'},
+      {v:'Неверно', icon:'❌', label:'НЕВЕРНО'}
+    ].forEach(function(item){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tf-btn';
+      b.dataset.val = item.v;
+
+      const ic = document.createElement('span');
+      ic.textContent = item.icon;
+      const tx = document.createElement('span');
+      tx.textContent = item.label;
+
+      b.appendChild(ic);
+      b.appendChild(tx);
+
+      b.addEventListener('click', function(){
+        if(state.answered) return;
+        state.answered = true;
+
+        row.querySelectorAll('.tf-btn').forEach(function(x){
+          x.disabled = true;
+          if(x.dataset.val === q.correct) x.classList.add('correct');
+        });
+
+        const ok = (item.v === q.correct);
+        if(!ok) b.classList.add('wrong');
+        finishQuestion(ok, q);
+      });
+
+      row.appendChild(b);
+    });
+
+    area.appendChild(row);
+  }
+
+  /* --- Тип 3: соотнесение пар --- */
+  function renderMatch(q, area){
+    const lefts = q.pairs.map(function(p, i){
+      return { id:i, text:p.left, chosen:null };
+    });
+    const rights = shuffle(q.pairs.map(function(p, i){
+      return { id:i, text:p.right };
+    }));
+    let selectedLeft = null;
+
+    const grid = document.createElement('div');
+    grid.className = 'match-grid';
+
+    const colL = document.createElement('div');
+    const colR = document.createElement('div');
+
+    const titleL = document.createElement('div');
+    titleL.className = 'match-col-title';
+    titleL.innerHTML = '🔷 Слева';
+    const titleR = document.createElement('div');
+    titleR.className = 'match-col-title';
+    titleR.innerHTML = '🔶 Справа';
+
+    colL.appendChild(titleL);
+    colR.appendChild(titleR);
+    grid.appendChild(colL);
+    grid.appendChild(colR);
+
+    const checkBtn = document.createElement('button');
+    checkBtn.type = 'button';
+    checkBtn.className = 'btn-check';
+    checkBtn.innerHTML = '✔ Проверить';
+    checkBtn.disabled = true;
+
+    function paint(){
+      colL.querySelectorAll('.match-item').forEach(function(e){ e.remove(); });
+      colR.querySelectorAll('.match-item').forEach(function(e){ e.remove(); });
+
+      lefts.forEach(function(l){
+        const el = document.createElement('div');
+        el.className = 'match-item';
+
+        const dot = document.createElement('span');
+        dot.className = 'mi-dot';
+        el.appendChild(dot);
+
+        const txt = document.createElement('span');
+        txt.textContent = l.text + (l.chosen ? '  ➜  ' + l.chosen.text : '');
+        el.appendChild(txt);
+
+        if(selectedLeft === l.id) el.classList.add('selected');
+        if(l.chosen) el.classList.add('paired');
+        if(state.answered){
+          el.classList.add(l.chosen && l.chosen.id === l.id ? 'ok' : 'bad');
+        }
+
+        el.addEventListener('click', function(){
+          if(state.answered) return;
+          if(l.chosen){
+            l.chosen = null;
+            selectedLeft = null;
+          } else {
+            selectedLeft = (selectedLeft === l.id) ? null : l.id;
+          }
+          paint();
+        });
+
+        colL.appendChild(el);
+      });
+
+      rights.forEach(function(r){
+        const el = document.createElement('div');
+        el.className = 'match-item';
+
+        const dot = document.createElement('span');
+        dot.className = 'mi-dot';
+        el.appendChild(dot);
+
+        const txt = document.createElement('span');
+        txt.textContent = r.text;
+        el.appendChild(txt);
+
+        const used = lefts.some(function(l){ return l.chosen === r; });
+        if(used) el.classList.add('used');
+
+        el.addEventListener('click', function(){
+          if(state.answered) return;
+          if(selectedLeft === null) return;
+          if(used) return;
+          const l = lefts.filter(function(x){ return x.id === selectedLeft; })[0];
+          l.chosen = r;
+          selectedLeft = null;
+          paint();
+        });
+
+        colR.appendChild(el);
+      });
+
+      checkBtn.disabled = state.answered || lefts.some(function(l){ return !l.chosen; });
+    }
+
+    checkBtn.addEventListener('click', function(){
+      if(state.answered) return;
+      if(lefts.some(function(l){ return !l.chosen; })) return;
+
+      state.answered = true;
+      const ok = lefts.every(function(l){ return l.chosen.id === l.id; });
+      paint();
+      finishQuestion(ok, q);
+    });
+
+    area.appendChild(grid);
+    area.appendChild(checkBtn);
+    paint();
+  }
+
+  /* =====================================================
+     ТИП 4: КЛАССИФИКАЦИЯ С DRAG & DROP
+     ===================================================== */
+  function renderClassify(q, area){
+    /* Итоговый список с назначением */
+    const items = shuffle(q.items.map(function(it, i){
+      return { id:i, text:it.text, bucket:it.bucket, place:null };
+    }));
+
+    const wrap = document.createElement('div');
+    wrap.className = 'classify-wrap';
+
+    /* Пул */
+    const pool = document.createElement('div');
+    pool.className = 'pool';
+
+    /* Корзины */
+    const bucketsWrap = document.createElement('div');
+    bucketsWrap.className = 'buckets';
+
+    const checkBtn = document.createElement('button');
+    checkBtn.type = 'button';
+    checkBtn.className = 'btn-check';
+    checkBtn.innerHTML = '✔ Проверить';
+    checkBtn.disabled = true;
+
+    /* Корзины с метаданными */
+    const bucketEls = q.buckets.map(function(name){
+      const meta = bucketMeta(name);
+      const el = document.createElement('div');
+      el.className = 'bucket ' + meta.cls;
+      el.dataset.bucket = name;
+
+      const t = document.createElement('div');
+      t.className = 'bucket-title';
+      t.textContent = meta.icon + ' ' + name;
+
+      const body = document.createElement('div');
+      body.className = 'bucket-body';
+
+      el.appendChild(t);
+      el.appendChild(body);
+
+      bucketsWrap.appendChild(el);
+      return { name:name, el:el, body:body };
+    });
+
+    /* -------- DRAG & DROP -------- */
+    let dragging = null;
+
+    function getBucketAt(x, y){
+      for(let i = 0; i < bucketEls.length; i++){
+        const r = bucketEls[i].el.getBoundingClientRect();
+        if(x >= r.left && x <= r.right && y >= r.top && y <= r.bottom){
+          return bucketEls[i];
+        }
+      }
+      return null;
+    }
+
+    function onMove(e){
+      if(!dragging) return;
+      dragging.ghost.style.left = (e.clientX - dragging.offsetX) + 'px';
+      dragging.ghost.style.top  = (e.clientY - dragging.offsetY) + 'px';
+
+      const over = getBucketAt(e.clientX, e.clientY);
+      bucketEls.forEach(function(b){
+        b.el.classList.toggle('hover', b === over);
+      });
+    }
+
+    function onUp(e){
+      if(!dragging) return;
+
+      const over = getBucketAt(e.clientX, e.clientY);
+
+      if(over){
+        dragging.item.place = over.name;
+      } else {
+        /* если уронили вне корзин — вернуть в пул */
+        dragging.item.place = null;
+      }
+
+      if(dragging.ghost && dragging.ghost.parentNode){
+        dragging.ghost.parentNode.removeChild(dragging.ghost);
+      }
+      if(dragging.chip && dragging.chip.parentNode){
+        dragging.chip.classList.remove('dragging');
+      }
+      bucketEls.forEach(function(b){ b.el.classList.remove('hover'); });
+      dragging = null;
+
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      document.removeEventListener('pointercancel', onUp);
+
+      paint();
+    }
+
+    function startDrag(e, it, chip){
+      if(state.answered) return;
+      if(e.button !== undefined && e.button !== 0) return;
+
+      e.preventDefault();
+
+      /* сохраняем изначальное место, чтобы при возврате вести себя корректно */
+      const originPlace = it.place;
+      it.place = null;
+
+      /* клон-призрак */
+      const ghost = chip.cloneNode(true);
+      ghost.classList.add('ghost');
+      ghost.classList.remove('dragging');
+
+      const rect = chip.getBoundingClientRect();
+      ghost.style.width = rect.width + 'px';
+      ghost.style.left  = rect.left + 'px';
+      ghost.style.top   = rect.top + 'px';
+      document.body.appendChild(ghost);
+
+      chip.classList.add('dragging');
+
+      dragging = {
+        item: it,
+        chip: chip,
+        ghost: ghost,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+        originPlace: originPlace
+      };
+
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
+
+      /* перерисовываем, чтобы чип «исчез» из старого места */
+      paint();
+      /* но призрак должен оставаться видимым — он в body */
+    }
+
+    /* -------- Отрисовка чипа -------- */
+    function makeChip(it){
+      const c = document.createElement('div');
+      c.className = 'chip';
+      c.dataset.id = it.id;
+
+      const icon = document.createElement('span');
+      icon.className = 'chip-icon';
+      icon.textContent = chipIcon(it.text);
+
+      const txt = document.createElement('span');
+      txt.textContent = it.text;
+
+      c.appendChild(icon);
+      c.appendChild(txt);
+
+      if(state.answered){
+        c.classList.add(it.place === it.bucket ? 'ok' : 'bad');
+        c.classList.add('locked');
+      } else {
+        c.addEventListener('pointerdown', function(e){
+          startDrag(e, it, c);
+        });
+      }
+
+      return c;
+    }
+
+    /* -------- Отрисовка всего поля -------- */
+    function paint(){
+      /* Пул */
+      pool.innerHTML = '';
+      const unplaced = items.filter(function(i){ return i.place === null; });
+
+      if(unplaced.length === 0){
+        const empty = document.createElement('div');
+        empty.className = 'pool-empty';
+        empty.textContent = 'Все выражения распределены — нажми «Проверить» ✔';
+        pool.appendChild(empty);
+      } else {
+        unplaced.forEach(function(it){ pool.appendChild(makeChip(it)); });
+      }
+
+      /* Корзины */
+      bucketEls.forEach(function(b){
+        b.body.innerHTML = '';
+        const inBucket = items.filter(function(i){ return i.place === b.name; });
+
+        if(inBucket.length === 0){
+          const ph = document.createElement('div');
+          ph.className = 'bucket-placeholder';
+          ph.textContent = '— пусто —';
+          b.body.appendChild(ph);
+        } else {
+          inBucket.forEach(function(it){ b.body.appendChild(makeChip(it)); });
+        }
+      });
+
+      checkBtn.disabled = state.answered || items.some(function(i){ return i.place === null; });
+    }
+
+    /* -------- Проверка -------- */
+    checkBtn.addEventListener('click', function(){
+      if(state.answered) return;
+      if(items.some(function(i){ return i.place === null; })) return;
+
+      state.answered = true;
+      const ok = items.every(function(i){ return i.place === i.bucket; });
+      paint();
+      finishQuestion(ok, q);
+    });
+
+    wrap.appendChild(pool);
+    wrap.appendChild(bucketsWrap);
+    wrap.appendChild(checkBtn);
+    area.appendChild(wrap);
+    paint();
+  }
+
+  /* =====================================================
+     ЗАВЕРШЕНИЕ ВОПРОСА
+     ===================================================== */
+  function finishQuestion(ok, q){
+    const per = (q.stage === 1) ? 0.4 : 0.2;
+
+    if(ok){
+      state.score += per;
+      if(q.stage === 1) state.stage1Correct++;
+      else              state.stage2Correct++;
+    }
+
+    $('progress-fill').style.width = ((state.idx + 1) / QUESTIONS.length * 100) + '%';
+    updateScoreHud();
+
+    const fb = $('feedback');
+    if(ok){
+      fb.innerHTML = '<span>✅</span><span>Верно! Молодец!</span>';
+      fb.className = 'feedback ok';
+    } else {
+      fb.innerHTML = '<span>❌</span><span>Неверно. Правильный ответ: ' + correctText(q) + '</span>';
+      fb.className = 'feedback bad';
+    }
+
+    const nextBtn = $('next-btn');
+    nextBtn.classList.remove('hidden');
+    nextBtn.textContent = (state.idx === QUESTIONS.length - 1)
+      ? '🏁 Показать результат'
+      : 'Следующий вопрос ➜';
+  }
+
+  /* =====================================================
+     ПОДСКАЗКА
+     ===================================================== */
+  $('hint-btn').addEventListener('click', function(){
+    $('hint-box').classList.toggle('hidden');
+  });
+
+  /* =====================================================
+     КНОПКА «СЛЕДУЮЩИЙ ВОПРОС»
+     ===================================================== */
+  $('next-btn').addEventListener('click', function(){
+    if(state.idx === 19 && !state.stage2Started){
+      state.stage2Started = true;
+      $('ov-score').textContent = fmt(state.score);
+      $('overlay').classList.remove('hidden');
+      return;
+    }
+
+    if(state.idx >= QUESTIONS.length - 1){
+      showResults();
+      return;
+    }
+
+    state.idx++;
+    renderQuestion();
+  });
+
+  $('ov-btn').addEventListener('click', function(){
+    $('overlay').classList.add('hidden');
+    state.idx = 20;
+    renderQuestion();
+  });
+
+  /* =====================================================
+     ЭКРАН 3: ИТОГИ
+     ===================================================== */
+  function showResults(){
+    showScreen('result');
+
+    const total     = Math.round(state.score);
+    const stage1Pts = Math.round(state.stage1Correct * 0.4 * 10) / 10;
+    const stage2Pts = Math.round(state.stage2Correct * 0.2 * 10) / 10;
+
+    $('res-name').innerHTML = '👤 Практическую работу выполнил(а): <b>' + state.name + '</b>';
+    $('res-score').innerHTML = total + ' <span>из 10 баллов</span>';
+
+    $('res-stage1').innerHTML =
+      '🎯 Этап 1: ' + state.stage1Correct + '/20 → <b>' + fmt(stage1Pts) + '</b> из 8';
+    $('res-stage2').innerHTML =
+      '🚀 Этап 2: ' + state.stage2Correct + '/10 → <b>' + fmt(stage2Pts) + '</b> из 2';
+
+    let verdict, icon, color, rowId;
+    if(total >= 9){       verdict = 'Отлично!';            icon = '🌟'; color = '#2ea44f'; rowId = 'desc-a'; }
+    else if(total >= 7){  verdict = 'Хорошо!';             icon = '👍'; color = '#3b7ddd'; rowId = 'desc-b'; }
+    else if(total >= 5){  verdict = 'Удовлетворительно';   icon = '📘'; color = '#e08c00'; rowId = 'desc-c'; }
+    else {                verdict = 'Нужно повторить';     icon = '🔁'; color = '#e5484d'; rowId = 'desc-d'; }
+
+    const vEl = $('res-verdict');
+    vEl.innerHTML = '<span>' + icon + '</span><span>' + verdict + '</span>';
+    vEl.style.color = color;
+
+    ['desc-a','desc-b','desc-c','desc-d'].forEach(function(id){
+      $(id).classList.remove('active');
+    });
+    $(rowId).classList.add('active');
+  }
+
+  /* =====================================================
+     КНОПКА «ПРОЙТИ ЗАНОВО»
+     ===================================================== */
+  $('restart-btn').addEventListener('click', function(){
+    nameInput.value = '';
+    startBtn.disabled = true;
+    nameHint.textContent = '✏️ Введите не менее 2 символов';
+    nameHint.classList.remove('ok');
+
+    state.name = '';
+    state.idx = 0;
+    state.score = 0;
+    state.stage1Correct = 0;
+    state.stage2Correct = 0;
+    state.answered = false;
+    state.stage2Started = false;
+
+    $('overlay').classList.add('hidden');
+    showScreen('login');
+  });
+
+})();
+</script>
+</body>
+</html>
